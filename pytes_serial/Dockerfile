@@ -10,27 +10,26 @@ RUN apk add --no-cache \
     py3-pip \
     py3-setuptools \
     py3-wheel \
-    py3-configparser \
-    py3-datetime \
-    py3-pytz \
     py3-zope-interface \
     py3-mysqlclient \
     py3-paho-mqtt \
-    py3-packaging \
-    py3-serial
+    py3-packaging
 
 # Creare mediu virtual pentru instalarea dependențelor
 RUN python3 -m venv /app/venv
 ENV PATH="/app/venv/bin:$PATH"
 
-# Instalare dependențe Python în mediu virtual
-COPY requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r /app/requirements.txt
-
+# Copiere fișiere
 WORKDIR /app
+COPY requirements.txt /app/requirements.txt
 COPY run.sh /app/run.sh
 COPY pytes_serial.py /app/pytes_serial.py
 
+# Instalare pachete Python lipsă în mediu virtual
+RUN /app/venv/bin/pip install --no-cache-dir configparser datetime pytz pyserial
+RUN /app/venv/bin/pip install --no-cache-dir -r /app/requirements.txt
+
+# Asigură-te că scriptul este executabil
 RUN chmod +x /app/run.sh
 
 CMD [ "/app/run.sh" ]
