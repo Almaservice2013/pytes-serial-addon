@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python
 import logging
 from logging.handlers import RotatingFileHandler
@@ -10,6 +11,7 @@ import paho.mqtt.publish as publish
 import re
 import argparse
 import os
+from configparser import ConfigParser
 
 # --------------------------- Argument pentru fișierul de configurare ----------
 parser = argparse.ArgumentParser()
@@ -20,20 +22,65 @@ args = parser.parse_args()
 config = ConfigParser()
 config.read(args.config)
 
+# SERIAL CONFIG
 serial_port = config.get('serial', 'serial_port', fallback='/dev/ttyUSB0')
 serial_baudrate = int(config.get('serial', 'serial_baudrate', fallback=9600))
 reading_freq = int(config.get('serial', 'reading_freq', fallback=10))
+
+# GENERAL CONFIG
 output_path = config.get('general', 'output_path', fallback='/data/')
+
+# BATTERY CONFIG
 powers = int(config.get('battery_info', 'powers', fallback=1))
 cells = int(config.get('battery_info', 'cells', fallback=15))
 dev_name = config.get('battery_info', 'dev_name', fallback='pytes')
 manufacturer = config.get('battery_info', 'manufacturer', fallback='PYTES')
 model = config.get('battery_info', 'model', fallback='E-BOX 48100R')
+
+# DATABASE CONFIG
+sql_active = config.get('Maria DB connection', 'SQL_active', fallback='false').lower() == 'true'
+sql_host = config.get('Maria DB connection', 'host', fallback='192.168.0.100')
+sql_port = int(config.get('Maria DB connection', 'db_port', fallback=3307))
+sql_user = config.get('Maria DB connection', 'user', fallback='yourusername')
+sql_password = config.get('Maria DB connection', 'password', fallback='yourpassword')
+sql_database = config.get('Maria DB connection', 'database', fallback='pytes')
+
+# MQTT CONFIG
+mqtt_active = config.get('MQTT', 'MQTT_active', fallback='false').lower() == 'true'
+mqtt_broker = config.get('MQTT', 'MQTT_broker', fallback='192.168.0.100')
+mqtt_port = int(config.get('MQTT', 'MQTT_port', fallback=1883))
+mqtt_username = config.get('MQTT', 'MQTT_username', fallback='')
+mqtt_password = config.get('MQTT', 'MQTT_password', fallback='')
+
+# LOGGING CONFIG
+logging_level = config.get('logging', 'LOGGING_LEVEL', fallback='INFO')
+logging_file_max_size = int(config.get('logging', 'LOGGING_FILE_MAX_SIZE', fallback=5000))
+logging_file_max_files = int(config.get('logging', 'LOGGING_FILE_MAX_FILES', fallback=1))
+
+# EVENTS MONITORING
+events_monitoring = config.get('events_monitoring', 'events_monitoring', fallback='false').lower() == 'true'
+cells_details = config.get('events_monitoring', 'cells_details', fallback='true').lower() == 'true'
+events_mon_level = config.get('events_monitoring', 'monitoring_level', fallback='warning')
+
+# CELLS MONITORING
+cells_monitoring = config.get('cells_monitoring', 'cells_monitoring', fallback='false').lower() == 'true'
+cells_mon_level = config.get('cells_monitoring', 'monitoring_level', fallback='medium')
+
 sw_ver = "PytesSerial v0.8.0_20241107"
 version = sw_ver
 
 if reading_freq < 10:
     reading_freq = 10
+
+# --------------------------- Afișare Configurație ----------
+print(f"Serial Port: {serial_port} @ {serial_baudrate} baud")
+print(f"Output Path: {output_path}")
+print(f"Battery Model: {model} ({manufacturer}, {cells} cells)")
+print(f"Database Active: {sql_active} - Host: {sql_host}:{sql_port}")
+print(f"MQTT Active: {mqtt_active} - Broker: {mqtt_broker}:{mqtt_port} - User: {mqtt_username}")
+print(f"Logging Level: {logging_level}, File Max Size: {logging_file_max_size}KB")
+print(f"Events Monitoring: {events_monitoring}, Level: {events_mon_level}")
+print(f"Cells Monitoring: {cells_monitoring}, Level: {cells_mon_level}")
 
 SQL_active            = config.get('Maria DB connection', 'SQL_active')
 host                  = config.get('Maria DB connection', 'host')
