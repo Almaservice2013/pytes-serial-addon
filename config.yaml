@@ -1,0 +1,34 @@
+name: "Pytes Serial Add-on"
+version: "1.0.0"
+slug: "pytes_serial"
+description: "Add-on pentru citirea datelor de la baterii Pytes folosind protocolul serial"
+arch:
+  - aarch64
+init: false
+startup: application
+boot: auto
+options:
+  serial_port: "/dev/ttyUSB0"
+  baudrate: 9600
+  mqtt_broker: "192.168.1.100"
+  mqtt_port: 1883
+  mqtt_topic: "homeassistant/sensor/pytes/state"
+schema:
+  serial_port: str
+  baudrate: int
+  mqtt_broker: str
+  mqtt_port: int
+  mqtt_topic: str
+devices:
+  - "/dev/ttyUSB0:/dev/ttyUSB0"
+  - "/dev/ttyS0:/dev/ttyS0"
+host_network: true
+privileged:
+  - SYS_RAWIO
+  - SYS_ADMIN
+map:
+  - config:rw
+  - ssl
+  - share:rw
+  - addons:rw
+  - backup:rw
