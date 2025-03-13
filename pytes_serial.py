@@ -8,27 +8,21 @@ import json
 from configparser import ConfigParser
 import paho.mqtt.publish as publish
 import re
-import argparse
-import os
 
-# --------------------------- Argument pentru fișierul de configurare ----------
-parser = argparse.ArgumentParser()
-parser.add_argument("--config", default="/config/pytes_serial.cfg", help="Path către fișierul de configurare")
-args = parser.parse_args()
-
-# --------------------------- Inițializare variabile ----------
+# ---------------------------variables initialization----------
 config = ConfigParser()
-config.read(args.config)
+config.read('/config/pytes_serial.cfg')  # Modificat pentru a folosi calea corectă din Home Assistant
 
 serial_port = config.get('serial', 'serial_port', fallback='/dev/ttyUSB0')
-serial_baudrate = int(config.get('serial', 'serial_baudrate', fallback=9600))
+serial_baudrate = int(config.get('serial', 'serial_baudrate', fallback=115200))
 reading_freq = int(config.get('serial', 'reading_freq', fallback=10))
-output_path = config.get('general', 'output_path', fallback='/data/')
+output_path = config.get('general', 'output_path', fallback='/config/')
+
 powers = int(config.get('battery_info', 'powers', fallback=1))
-cells = int(config.get('battery_info', 'cells', fallback=15))
+cells = int(config.get('battery_info', 'cells', fallback=16))
 dev_name = config.get('battery_info', 'dev_name', fallback='pytes')
-manufacturer = config.get('battery_info', 'manufacturer', fallback='PYTES')
-model = config.get('battery_info', 'model', fallback='E-BOX 48100R')
+manufacturer = config.get('battery_info', 'manufacturer', fallback='PYTES Energy Co.Ltd')
+model = config.get('battery_info', 'model', fallback='E-BOX-48100R')
 sw_ver = "PytesSerial v0.8.0_20241107"
 version = sw_ver
 
