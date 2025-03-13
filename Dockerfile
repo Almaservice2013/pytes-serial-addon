@@ -19,20 +19,19 @@ RUN apk add --no-cache \
     curl
 
 # Asigură-te că pip este actualizat și funcțional
-RUN python3 -m ensurepip --default-pip
 RUN python3 -m pip install --upgrade pip
 
-# Setare director de lucru
-WORKDIR /config
+# Creare și setare director de lucru
+RUN mkdir -p /app
+WORKDIR /app
 
-# Copiere fișier requirements.txt
-COPY requirements.txt /config/requirements.txt
+# Copiere fișiere Python și de configurare
+COPY requirements.txt /app/requirements.txt
+COPY pytes_serial.py /app/pytes_serial.py
+COPY rootfs/ /
 
 # Instalare pachete Python din requirements.txt
-RUN python3 -m pip install --no-cache-dir -r /config/requirements.txt
-
-# Copiază fișierele necesare pentru S6 Overlay și Home Assistant
-COPY rootfs/ /
+RUN python3 -m pip install --no-cache-dir -r /app/requirements.txt
 
 # Asigură-te că serviciul S6 este pornit corect
 CMD [ "/init" ]
