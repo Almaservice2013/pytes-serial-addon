@@ -21,8 +21,10 @@ RUN apk add --no-cache \
 # Setare director de lucru
 WORKDIR /config
 
-# Repară potențiale probleme cu pip în Alpine Linux
-RUN python3 -m ensurepip --default-pip
+# **NU mai folosim ensurepip!**
+# Reparăm potențiale probleme cu pip și setăm calea corectă pentru Home Assistant
+RUN ln -sf /usr/bin/python3 /usr/bin/python
+RUN ln -sf /usr/bin/pip3 /usr/bin/pip
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
 # Copiere fișier requirements.txt
