@@ -4,7 +4,7 @@ FROM $BUILD_FROM
 ENV LANG C.UTF-8
 ENV PYTHONUNBUFFERED=1
 
-# Instalează pachetele necesare
+# Instalează pachetele necesare pentru Python și sistem
 RUN apk add --no-cache \
     python3 \
     py3-pip \
@@ -20,9 +20,10 @@ RUN apk add --no-cache \
     musl-dev \
     python3-dev \
     libffi-dev \
-    openssl-dev
+    openssl-dev \
+    linux-headers
 
-# Creăm un mediu virtual pentru Python
+# Creare și activare mediu virtual Python pentru instalarea pachetelor
 RUN python3 -m venv /config/venv
 ENV PATH="/config/venv/bin:$PATH"
 
