@@ -8,6 +8,7 @@ arch:
   - armhf
   - armv7
   - i386
+icon: "mdi:battery"
 startup: application
 boot: auto
 options:
