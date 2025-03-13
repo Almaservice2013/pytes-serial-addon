@@ -1,0 +1,77 @@
+name: "Pytes Serial Add-on"
+version: "1.0.0"
+slug: "pytes_serial"
+description: "Add-on pentru citirea datelor de la baterii Pytes"
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+  - i386
+startup: application
+boot: auto
+options:
+  serial_port: "/dev/ttyUSB0"
+  serial_baudrate: 115200
+  reading_freq: 10
+  output_path: "/config/"
+  powers: 1
+  cells: 16
+  dev_name: "pytes"
+  manufacturer: "PYTES Energy Co.Ltd"
+  model: "E-BOX-48100R"
+  SQL_active: false
+  SQL_host: "192.168.1.100"
+  SQL_db_port: 3307
+  SQL_user: "yourusername"
+  SQL_password: "yourpassword"
+  SQL_database: "pytes"
+  MQTT_active: false
+  MQTT_broker: "192.168.1.100"
+  MQTT_port: 1883
+  MQTT_username: ""
+  MQTT_password: ""
+  LOGGING_LEVEL: "logging.INFO"
+  LOGGING_FILE_MAX_SIZE: 5000
+  LOGGING_FILE_MAX_FILES: 1
+  events_monitoring: false
+  cells_details: true
+  monitoring_level: "warning"
+  cells_monitoring: true
+  cells_monitoring_level: "medium"
+schema:
+  serial_port: "str"
+  serial_baudrate: "int"
+  reading_freq: "int"
+  output_path: "str"
+  powers: "int"
+  cells: "int"
+  dev_name: "str"
+  manufacturer: "str"
+  model: "str"
+  SQL_active: "bool"
+  SQL_host: "str"
+  SQL_db_port: "int"
+  SQL_user: "str"
+  SQL_password: "str"
+  SQL_database: "str"
+  MQTT_active: "bool"
+  MQTT_broker: "str"
+  MQTT_port: "int"
+  MQTT_username: "str"
+  MQTT_password: "str"
+  LOGGING_LEVEL: "str"
+  LOGGING_FILE_MAX_SIZE: "int"
+  LOGGING_FILE_MAX_FILES: "int"
+  events_monitoring: "bool"
+  cells_details: "bool"
+  monitoring_level: "str"
+  cells_monitoring: "bool"
+  cells_monitoring_level: "str"
+init: false
+map:
+  - config:rw
+  - share:rw
+  - usb:rw
+devices:
+  - "/dev/ttyUSB0"
