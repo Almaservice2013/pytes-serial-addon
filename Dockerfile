@@ -4,7 +4,7 @@ FROM $BUILD_FROM
 ENV LANG C.UTF-8
 ENV PYTHONUNBUFFERED=1
 
-# Instalează pachetele necesare
+# Instalează pachetele necesare pentru Home Assistant
 RUN apk add --no-cache \
     python3 \
     py3-pip \
@@ -18,12 +18,21 @@ RUN apk add --no-cache \
     jq \
     curl
 
-# Copiază fișierele necesare pentru S6 Overlay
-COPY rootfs/ /
+# Asigură-te că pip este actualizat și funcțional
+RUN python3 -m ensurepip --default-pip
+RUN python3 -m pip install --upgrade pip
 
-# Instalare pachete Python lipsă
-RUN pip install --no-cache-dir configparser datetime pytz pyserial
-RUN pip install --no-cache-dir -r /config/requirements.txt
+# Setare director de lucru
+WORKDIR /config
+
+# Copiere fișier requirements.txt
+COPY requirements.txt /config/requirements.txt
+
+# Instalare pachete Python din requirements.txt
+RUN python3 -m pip install --no-cache-dir -r /config/requirements.txt
+
+# Copiază fișierele necesare pentru S6 Overlay și Home Assistant
+COPY rootfs/ /
 
 # Asigură-te că serviciul S6 este pornit corect
 CMD [ "/init" ]
