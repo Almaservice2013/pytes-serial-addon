@@ -21,8 +21,9 @@ RUN apk add --no-cache \
 # Setare director de lucru
 WORKDIR /config
 
-# Evită problemele cu pip
-RUN pip install --no-cache-dir --upgrade pip
+# Repară potențiale probleme cu pip în Alpine Linux
+RUN python3 -m ensurepip --default-pip
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
 # Copiere fișier requirements.txt
 COPY requirements.txt /config/requirements.txt
