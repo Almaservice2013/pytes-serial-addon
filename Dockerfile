@@ -16,22 +16,28 @@ RUN apk add --no-cache \
     py3-packaging \
     bash \
     jq \
-    curl
+    curl \
+    gcc \
+    musl-dev \
+    python3-dev \
+    libffi-dev \
+    openssl-dev
+
+# Repară potențiale probleme cu Python și pip
+RUN ln -sf /usr/bin/python3 /usr/bin/python
+RUN ln -sf /usr/bin/pip3 /usr/bin/pip
+
+# **IMPORTANT: Folosim python3 -m pip pentru instalare sigură**
+RUN python3 -m pip install --no-cache-dir --upgrade pip setuptools wheel
 
 # Setare director de lucru
 WORKDIR /config
-
-# **NU mai folosim ensurepip!**
-# Reparăm potențiale probleme cu pip și setăm calea corectă pentru Home Assistant
-RUN ln -sf /usr/bin/python3 /usr/bin/python
-RUN ln -sf /usr/bin/pip3 /usr/bin/pip
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
 # Copiere fișier requirements.txt
 COPY requirements.txt /config/requirements.txt
 
 # Instalare pachete Python din requirements.txt
-RUN pip install --no-cache-dir -r /config/requirements.txt
+RUN python3 -m pip install --no-cache-dir -r /config/requirements.txt
 
 # Copiază fișierele necesare pentru S6 Overlay și Home Assistant
 COPY rootfs/ /
