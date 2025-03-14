@@ -1,15 +1,13 @@
 ARG BUILD_FROM=ghcr.io/home-assistant/aarch64-base:latest
 FROM $BUILD_FROM
 
-# Setări de mediu
 ENV LANG C.UTF-8
 ENV PYTHONUNBUFFERED=1
 
-# Instalare pachete de sistem necesare
+# Instalare pachete necesare pentru Python și sistem
 RUN apk add --no-cache \
     python3 \
     py3-pip \
-    py3-virtualenv \
     py3-setuptools \
     py3-wheel \
     py3-mysqlclient \
@@ -29,6 +27,9 @@ RUN apk add --no-cache \
 RUN python3 -m venv /config/venv
 ENV PATH="/config/venv/bin:$PATH"
 
+# Instalare Bashio corect în mediu virtual
+RUN /config/venv/bin/pip install --no-cache-dir bashio
+
 # Setare director de lucru
 WORKDIR /config
 
@@ -38,7 +39,7 @@ COPY requirements.txt /config/requirements.txt
 # Instalare pachete Python în mediu virtual
 RUN /config/venv/bin/pip install --no-cache-dir -r /config/requirements.txt
 
-# Copiază fișierele necesare pentru S6 Overlay și Home Assistant
+# Copiere fișiere necesare pentru S6 Overlay și Home Assistant
 COPY rootfs/ /
 
 # Asigură-te că serviciul S6 este pornit corect

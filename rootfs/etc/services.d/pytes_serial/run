@@ -1,58 +1,53 @@
-#!/usr/bin/with-contenv bash
-set -e
-
+#!/usr/bin/with-contenv bashio
 echo "Starting Pytes Serial Add-on..."
 
 CONFIG_FILE="/config/pytes_serial.cfg"
 
-echo "[serial]" > "$CONFIG_FILE"
-echo "serial_port=$(bashio::config 'serial_port')" >> "$CONFIG_FILE"
-echo "serial_baudrate=$(bashio::config 'serial_baudrate')" >> "$CONFIG_FILE"
-echo "reading_freq=$(bashio::config 'reading_freq')" >> "$CONFIG_FILE"
+# Generare fișier de configurare din Home Assistant Add-on config.json
+echo "[serial]" > $CONFIG_FILE
+echo "serial_port=$(bashio::config 'serial_port')" >> $CONFIG_FILE
+echo "serial_baudrate=$(bashio::config 'serial_baudrate')" >> $CONFIG_FILE
+echo "reading_freq=$(bashio::config 'reading_freq')" >> $CONFIG_FILE
+echo "[general]" >> $CONFIG_FILE
+echo "output_path=$(bashio::config 'output_path')" >> $CONFIG_FILE
 
-echo "[general]" >> "$CONFIG_FILE"
-echo "output_path=$(bashio::config 'output_path')" >> "$CONFIG_FILE"
+echo "[battery_info]" >> $CONFIG_FILE
+echo "powers=$(bashio::config 'powers')" >> $CONFIG_FILE
+echo "cells=$(bashio::config 'cells')" >> $CONFIG_FILE
+echo "dev_name=$(bashio::config 'dev_name')" >> $CONFIG_FILE
+echo "manufacturer=$(bashio::config 'manufacturer')" >> $CONFIG_FILE
+echo "model=$(bashio::config 'model')" >> $CONFIG_FILE
 
-echo "[battery_info]" >> "$CONFIG_FILE"
-echo "powers=$(bashio::config 'powers')" >> "$CONFIG_FILE"
-echo "cells=$(bashio::config 'cells')" >> "$CONFIG_FILE"
-echo "dev_name=$(bashio::config 'dev_name')" >> "$CONFIG_FILE"
-echo "manufacturer=$(bashio::config 'manufacturer')" >> "$CONFIG_FILE"
-echo "model=$(bashio::config 'model')" >> "$CONFIG_FILE"
+echo "[Maria DB connection]" >> $CONFIG_FILE
+echo "SQL_active=$(bashio::config 'sql_active')" >> $CONFIG_FILE
+echo "host=$(bashio::config 'sql_host')" >> $CONFIG_FILE
+echo "db_port=$(bashio::config 'sql_db_port')" >> $CONFIG_FILE
+echo "user=$(bashio::config 'sql_user')" >> $CONFIG_FILE
+echo "password=$(bashio::config 'sql_password')" >> $CONFIG_FILE
+echo "database=$(bashio::config 'sql_database')" >> $CONFIG_FILE
 
-echo "[Maria DB connection]" >> "$CONFIG_FILE"
-echo "SQL_active=$(bashio::config 'sql_active')" >> "$CONFIG_FILE"
-echo "host=$(bashio::config 'sql_host')" >> "$CONFIG_FILE"
-echo "db_port=$(bashio::config 'sql_db_port')" >> "$CONFIG_FILE"
-echo "user=$(bashio::config 'sql_user')" >> "$CONFIG_FILE"
-echo "password=$(bashio::config 'sql_password')" >> "$CONFIG_FILE"
-echo "database=$(bashio::config 'sql_database')" >> "$CONFIG_FILE"
+echo "[MQTT]" >> $CONFIG_FILE
+echo "MQTT_active=$(bashio::config 'mqtt_active')" >> $CONFIG_FILE
+echo "MQTT_broker=$(bashio::config 'mqtt_broker')" >> $CONFIG_FILE
+echo "MQTT_port=$(bashio::config 'mqtt_port')" >> $CONFIG_FILE
+echo "MQTT_username=$(bashio::config 'mqtt_username')" >> $CONFIG_FILE
+echo "MQTT_password=$(bashio::config 'mqtt_password')" >> $CONFIG_FILE
 
-echo "[MQTT]" >> "$CONFIG_FILE"
-echo "MQTT_active=$(bashio::config 'mqtt_active')" >> "$CONFIG_FILE"
-echo "MQTT_broker=$(bashio::config 'mqtt_broker')" >> "$CONFIG_FILE"
-echo "MQTT_port=$(bashio::config 'mqtt_port')" >> "$CONFIG_FILE"
-echo "MQTT_username=$(bashio::config 'mqtt_username')" >> "$CONFIG_FILE"
-echo "MQTT_password=$(bashio::config 'mqtt_password')" >> "$CONFIG_FILE"
+echo "[logging]" >> $CONFIG_FILE
+echo "LOGGING_LEVEL=$(bashio::config 'logging_level')" >> $CONFIG_FILE
+echo "LOGGING_FILE_MAX_SIZE=$(bashio::config 'logging_file_max_size')" >> $CONFIG_FILE
+echo "LOGGING_FILE_MAX_FILES=$(bashio::config 'logging_file_max_files')" >> $CONFIG_FILE
 
-echo "[logging]" >> "$CONFIG_FILE"
-echo "LOGGING_LEVEL=$(bashio::config 'logging_level')" >> "$CONFIG_FILE"
-echo "LOGGING_FILE_MAX_SIZE=$(bashio::config 'logging_file_max_size')" >> "$CONFIG_FILE"
-echo "LOGGING_FILE_MAX_FILES=$(bashio::config 'logging_file_max_files')" >> "$CONFIG_FILE"
+echo "[events_monitoring]" >> $CONFIG_FILE
+echo "events_monitoring=$(bashio::config 'events_monitoring')" >> $CONFIG_FILE
+echo "cells_details=$(bashio::config 'cells_details')" >> $CONFIG_FILE
+echo "monitoring_level=$(bashio::config 'events_monitoring_level')" >> $CONFIG_FILE
 
-echo "[events_monitoring]" >> "$CONFIG_FILE"
-echo "events_monitoring=$(bashio::config 'events_monitoring')" >> "$CONFIG_FILE"
-echo "cells_details=$(bashio::config 'cells_details')" >> "$CONFIG_FILE"
-echo "monitoring_level=$(bashio::config 'events_monitoring_level')" >> "$CONFIG_FILE"
-
-echo "[cells_monitoring]" >> "$CONFIG_FILE"
-echo "cells_monitoring=$(bashio::config 'cells_monitoring')" >> "$CONFIG_FILE"
-echo "monitoring_level=$(bashio::config 'cells_monitoring_level')" >> "$CONFIG_FILE"
+echo "[cells_monitoring]" >> $CONFIG_FILE
+echo "cells_monitoring=$(bashio::config 'cells_monitoring')" >> $CONFIG_FILE
+echo "monitoring_level=$(bashio::config 'cells_monitoring_level')" >> $CONFIG_FILE
 
 echo "Configuration file generated!"
 
-# Activează mediu virtual (dacă folosești unul)
-# source /config/venv/bin/activate
-
-# Rulează scriptul principal și păstrează-l ca proces principal
-exec python3 /config/pytes_serial.py --config "$CONFIG_FILE"
+# Rulează scriptul Python cu configurația
+python3 /config/pytes_serial.py --config $CONFIG_FILE
