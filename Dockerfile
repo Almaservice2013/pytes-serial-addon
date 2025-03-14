@@ -8,12 +8,14 @@ ENV PYTHONUNBUFFERED=1
 RUN apk add --no-cache \
     python3 \
     py3-pip \
+    py3-virtualenv \
     py3-setuptools \
     py3-wheel \
     py3-mysqlclient \
     py3-paho-mqtt \
     py3-packaging \
     bash \
+    bashio \
     jq \
     curl \
     gcc \
@@ -23,8 +25,12 @@ RUN apk add --no-cache \
     openssl-dev \
     linux-headers
 
-# Creare și activare mediu virtual Python pentru instalarea pachetelor
-RUN python3 -m venv /config/venv
+# Creare și activare mediu virtual Python
+RUN python3 -m venv /config/venv && \
+    /config/venv/bin/python -m ensurepip --default-pip && \
+    /config/venv/bin/pip install --upgrade pip
+
+# Setează mediu virtual în PATH
 ENV PATH="/config/venv/bin:$PATH"
 
 # Setare director de lucru
@@ -34,10 +40,10 @@ WORKDIR /config
 COPY requirements.txt /config/requirements.txt
 
 # Instalare pachete Python în mediu virtual
-RUN /config/venv/bin/pip install --no-cache-dir -r /config/requirements.txt
+RUN pip install --no-cache-dir -r /config/requirements.txt
 
 # Copiază fișierele necesare pentru S6 Overlay și Home Assistant
 COPY rootfs/ /
 
 # Asigură-te că serviciul S6 este pornit corect
-CMD [ "/init" ]
+CMD [ "exec", "/init" ]
