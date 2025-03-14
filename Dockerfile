@@ -5,7 +5,7 @@ FROM $BUILD_FROM
 ENV LANG C.UTF-8
 ENV PYTHONUNBUFFERED=1
 
-# Instalare pachete de sistem necesare pentru Home Assistant
+# Instalare pachete de sistem necesare
 RUN apk add --no-cache \
     python3 \
     py3-pip \
@@ -38,7 +38,7 @@ COPY requirements.txt /config/requirements.txt
 # Instalare pachete Python în mediu virtual
 RUN /config/venv/bin/pip install --no-cache-dir -r /config/requirements.txt
 
-# Copiere fișiere necesare pentru S6 Overlay și Home Assistant
+# Copiază fișierele necesare pentru S6 Overlay și Home Assistant
 COPY rootfs/ /
 
 # Asigură-te că serviciul S6 este pornit corect
